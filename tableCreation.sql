@@ -1,5 +1,5 @@
 -- Database Project on Shopping Assistant by Shamim Ahamed(Roll-1707028)
-
+  
 set serveroutput on
 
 -- Drop tables
