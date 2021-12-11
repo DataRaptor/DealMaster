@@ -1,0 +1,176 @@
+//// -- LEVEL 1
+//// -- Tables and References
+
+// Creating references
+// You can also define relaionship separately
+// > many-to-one; < one-to-many; - one-to-one
+
+Table cities {
+  id int
+  city_name varchar
+  country_id int [ref: > countries.id]
+}
+
+Table merchants {
+  id int [pk, increment]
+  merchant_name varchar
+  address varchar 
+  city_id int
+  phone varchar
+  rating varchar
+  details varchar
+  visits varchar
+  image_url varchar
+  total_likes int
+  created_at timestamp
+}
+
+Table merchant_city {
+  city_id int
+  merchant_id int
+}
+
+Table users {
+  id int [pk]
+  email varchar
+  password varchar
+  first_name varchar
+  last_name varchar
+  total_savel int
+  balance int
+  created_at timestamp
+  last_active timestamp
+}
+
+Table roles {
+  user_id int [ref: > users.id]
+  merchant_id int [ref: < merchants.id]
+  role_name varchar
+}
+
+
+Table countries {
+  id int [pk, increment]
+  country_name varchar
+}
+
+Table products {
+  id int [pk]
+  product_name varchar
+  merchant_id int [not null]
+  price int
+  current_price int
+  status products_status
+  created_at datetime [default: `now()`]
+  rating int
+  is_online bool
+}
+
+Table categories {
+  id int [pk]
+  title varchar
+  parent_id int
+}
+
+Table product_category {
+  product_id int [ref: > products.id]
+  category_id int [ref: > categories.id]
+}
+
+Table orders {
+  id int [pk] // primary key
+  user_id int [not null, unique]
+  status varchar
+  created_at varchar [note: 'When order created'] // add column note
+}
+
+Table order_items {
+  order_id int [ref: > orders.id] // inline relationship (many-to-one)
+  product_id int
+  quantity int [default: 1] // default value
+}
+
+
+Table coupons {
+  id int
+  merchant_id int [ref: > merchants.id]
+  code varchar
+  description varchar
+  coupon_type varchar
+  amount int
+  is_fixed int
+  max int
+  expiry timestamp
+  min_spend int
+  max_spend int
+}
+
+Table coupon_product {
+  coupon_id int  [ref: > coupons.id]
+  product_id int [ref: > products.id]
+}
+
+Table coupon_category {
+  coupon_id int [ref: > coupons.id]
+  categorie_id int [ref: > categories.id]
+  
+}
+
+Table my_coupons {
+  user_id int [ref: > users.id]
+  code varchar
+  value int
+}
+
+Table tags {
+  product_id int [ref: > products.id]
+  title varchar
+}
+
+
+
+Table likes {
+  merchant_id int [ref: > merchants.id]
+  user_id int [ref: > users.id]
+}
+
+Table reviews {
+  order_id int [ref: - orders.id]
+  photo_url varchar
+}
+
+//----------------------------------------------//
+
+//// -- LEVEL 2
+//// -- Adding column settings
+
+
+
+Ref: order_items.product_id > products.id
+
+
+
+//----------------------------------------------//
+
+//// -- Level 3 
+//// -- Enum, Indexes
+
+// Enum for 'products' table below
+Enum products_status {
+  out_of_stock
+  in_stock
+  running_low [note: 'less than 20'] // add column note
+}
+
+
+
+
+Ref: "cities"."id" < "merchant_city"."city_id"
+
+Ref: "merchant_city"."merchant_id" < "merchants"."id"
+
+Ref: "orders"."user_id" < "users"."id"
+
+Ref: "categories"."parent_id" < "categories"."id"
+
+Ref: "products"."merchant_id" < "merchants"."id"
